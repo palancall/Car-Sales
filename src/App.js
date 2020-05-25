@@ -1,40 +1,53 @@
-import React from 'react';
+import React from "react";
+import { Switch, Route } from "react-router-dom";
 
-import Header from './components/Header';
-import AddedFeatures from './components/AddedFeatures';
-import AdditionalFeatures from './components/AdditionalFeatures';
-import Total from './components/Total';
+import Header from "./components/Header";
+import AddedFeatures from "./components/AddedFeatures";
+import AdditionalFeatures from "./components/AdditionalFeatures";
+import Total from "./components/Total";
+import { connect } from "react-redux";
+// import { useSelector } from "react-redux";
+import NavBar from "./components/NavBar";
+import Home from "./components/Home";
 
-const App = () => {
-  const state = {
-    additionalPrice: 0,
-    car: {
-      price: 26395,
-      name: '2019 Ford Mustang',
-      image:
-        'https://cdn.motor1.com/images/mgl/0AN2V/s1/2019-ford-mustang-bullitt.jpg',
-      features: []
-    },
-    additionalFeatures: [
-      { id: 1, name: 'V-6 engine', price: 1500 },
-      { id: 2, name: 'Racing detail package', price: 1500 },
-      { id: 3, name: 'Premium sound system', price: 500 },
-      { id: 4, name: 'Rear spoiler', price: 250 }
-    ]
-  };
-
+const App = (props) => {
   return (
-    <div className="boxes">
-      <div className="box">
-        <Header car={state.car} />
-        <AddedFeatures car={state.car} />
+    <div>
+      <div className="navbar">
+        <NavBar />
       </div>
-      <div className="box">
-        <AdditionalFeatures additionalFeatures={state.additionalFeatures} />
-        <Total car={state.car} additionalPrice={state.additionalPrice} />
-      </div>
+      <Switch>
+        <div className="boxes">
+          <div className="box">
+            <Header car={props.state.car} />
+            <AddedFeatures car={props.state.car} />
+          </div>
+          <div className="box">
+            <AdditionalFeatures
+              additionalFeatures={props.state.additionalFeatures}
+            />
+            <Total
+              car={props.state.car}
+              additionalPrice={props.state.car.features.reduce(
+                (acc, feature) => {
+                  return acc + feature.price;
+                },
+                props.state.additionalPrice
+              )}
+            />
+          </div>
+        </div>
+      </Switch>
     </div>
   );
 };
 
-export default App;
+const mapStateToProps = (state) => {
+  // console.log("LT: App.js: mapStateToProps: state", state);
+  return {
+    state: state,
+  };
+};
+export default connect(mapStateToProps, {})(App);
+
+// export default App;
